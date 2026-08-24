@@ -4,6 +4,14 @@ A full-stack movie and concert ticket booking platform with interactive visual s
 
 ---
 
+## 🌐 Hosted Demo URLs
+
+- **Render Live App**: [https://ticket-booking-system-897.onrender.com](https://ticket-booking-system-897.onrender.com)
+- **Vercel Live App**: [https://ticket-booking-system-vinayaktripathi1279s-projects.vercel.app](https://ticket-booking-system-vinayaktripathi1279s-projects.vercel.app)
+- **GitHub Repository**: [https://github.com/vinayaktripathi1279/Ticket_Booking_system.git](https://github.com/vinayaktripathi1279/Ticket_Booking_system.git)
+
+---
+
 ## 🌟 Key Features
 
 1. **Role-Based Access Control (RBAC)**:
