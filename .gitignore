@@ -1,0 +1,6 @@
+node_modules/
+ticket_system.db
+ticket_system.db-journal
+.env
+*.log
+.DS_Store

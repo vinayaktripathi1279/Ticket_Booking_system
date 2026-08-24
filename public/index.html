@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unthinkale Tickets - Smart Seat Booking Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <a href="#" class="logo" onclick="switchTab('events')">
+      <span>🎟️</span> UNTHINKALE TICKETS
+    </a>
+
+    <nav class="nav-links">
+      <button class="nav-btn active" onclick="switchTab('events')">🎬 Explore Events</button>
+      <button class="nav-btn" onclick="switchTab('seat-map')">💺 Seat Map</button>
+      <button class="nav-btn" onclick="switchTab('my-bookings')">🎟️ My Bookings</button>
+      <button class="nav-btn" onclick="switchTab('waitlist')">⏳ Waitlist Queue</button>
+      <button class="nav-btn" id="nav-organiser" onclick="switchTab('organiser')">📊 Analytics</button>
+      <button class="nav-btn" id="nav-admin" onclick="switchTab('admin')">⚙️ Venues</button>
+      <button class="nav-btn" onclick="switchTab('outbox')">📬 Email Outbox</button>
+    </nav>
+
+    <div class="user-profile-badge">
+      <div id="role-selector" style="display: flex; gap: 6px; align-items: center;">
+        <span style="font-size: 12px; color: var(--text-muted);">Quick Switch Role:</span>
+        <button class="btn-secondary" style="padding: 4px 8px; font-size: 11px;" onclick="quickLogin('alice@gmail.com')">Alice (Customer)</button>
+        <button class="btn-secondary" style="padding: 4px 8px; font-size: 11px;" onclick="quickLogin('organiser@pvr.com')">PVR (Organiser)</button>
+        <button class="btn-secondary" style="padding: 4px 8px; font-size: 11px;" onclick="quickLogin('admin@ticketapp.com')">Admin</button>
+      </div>
+
+      <div id="user-info" style="display: flex; align-items: center; gap: 8px; margin-left: 12px;">
+        <span id="user-name-display" style="font-weight: 700;">Guest</span>
+        <span id="user-role-pill" class="role-pill role-CUSTOMER">CUSTOMER</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Global Active Hold Banner -->
+  <div id="global-hold-banner" style="display: none; background: linear-gradient(90deg, #78350f, #d97706); color: white; padding: 10px; text-align: center; font-weight: bold;">
+    ⏱️ You have seats held! Checkout expires in <span id="global-hold-timer">10:00</span>.
+    <button class="btn-secondary" style="margin-left: 16px; padding: 4px 12px;" onclick="switchTab('seat-map')">Go to Checkout</button>
+  </div>
+
+  <main class="container">
+
+    <!-- 1. EVENTS SECTION -->
+    <section id="sec-events" class="app-section active">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div>
+          <h1 style="font-size: 28px; font-weight: 800;">Featured Movies & Concerts</h1>
+          <p style="color: var(--text-muted);">Select an event to view real-time visual seat map or join waitlist</p>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn-secondary" onclick="filterEvents('')">All</button>
+          <button class="btn-secondary" onclick="filterEvents('Movie')">🎬 Movies</button>
+          <button class="btn-secondary" onclick="filterEvents('Concert')">🎵 Concerts</button>
+        </div>
+      </div>
+
+      <div id="events-list" class="events-grid">
+        <!-- Event cards injected dynamically -->
+      </div>
+    </section>
+
+    <!-- 2. SEAT MAP SECTION -->
+    <section id="sec-seat-map" class="app-section">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h1 id="seat-map-event-title" style="font-size: 26px; font-weight: 800;">Select Your Seats</h1>
+          <p id="seat-map-event-meta" style="color: var(--text-muted);">Venue & Date info</p>
+        </div>
+        <button class="btn-secondary" onclick="switchTab('events')">← Back to Events</button>
+      </div>
+
+      <div class="seat-map-layout">
+        <div class="glass-panel" style="padding: 24px;">
+          <div class="cinema-screen">
+            <span class="screen-text">SCREEN / STAGE THIS WAY</span>
+          </div>
+
+          <div id="seat-grid-target" class="seat-grid-container">
+            <!-- Seat grid rendered dynamically -->
+          </div>
+
+          <div class="seat-legend">
+            <div class="legend-item"><div class="legend-box" style="background: #064e3b; border: 1px solid #059669;"></div> Available</div>
+            <div class="legend-item"><div class="legend-box" style="background: #0284c7; border: 1px solid #38bdf8;"></div> Selected</div>
+            <div class="legend-item"><div class="legend-box" style="background: #d97706; border: 1px solid #fbbf24;"></div> Held by You</div>
+            <div class="legend-item"><div class="legend-box" style="background: #78350f; border: 1px solid #d97706;"></div> Held by Others</div>
+            <div class="legend-item"><div class="legend-box" style="background: #1e293b; border: 1px solid #334155;"></div> Booked</div>
+            <div class="legend-item"><div class="legend-box" style="border: 2px solid #f59e0b;"></div> Premium ($)</div>
+            <div class="legend-item"><div class="legend-box" style="border: 1px solid #38bdf8;"></div> Standard ($)</div>
+          </div>
+        </div>
+
+        <!-- Cart Summary Drawer -->
+        <div class="glass-panel cart-summary">
+          <div>
+            <h3 style="font-weight: 700; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">Selection Summary</h3>
+            
+            <div id="cart-hold-timer-container" class="timer-badge" style="display: none;">
+              ⏱️ Hold Expiration: <span id="cart-hold-timer">10:00</span>
+            </div>
+
+            <div style="margin-bottom: 16px;">
+              <span style="color: var(--text-muted); font-size: 13px;">Selected Seats:</span>
+              <div id="cart-seats-list" style="font-size: 18px; font-weight: 800; color: var(--accent-blue); margin-top: 4px;">
+                None selected
+              </div>
+            </div>
+
+            <div style="margin-bottom: 24px;">
+              <span style="color: var(--text-muted); font-size: 13px;">Total Price:</span>
+              <div id="cart-total-price" style="font-size: 28px; font-weight: 800; color: var(--accent-emerald);">
+                $0
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <button id="btn-hold-seats" class="btn-secondary" style="width: 100%; border-color: var(--accent-amber); color: var(--accent-amber);" onclick="handleHoldSeats()">
+              🔒 Place Hold (10m TTL)
+            </button>
+            <button id="btn-confirm-booking" class="btn-primary" onclick="handleConfirmBooking()">
+              🎟️ Confirm Booking & Get QR
+            </button>
+            <button id="btn-release-hold" class="btn-secondary" style="width: 100%;" onclick="handleReleaseHold()">
+              Release Hold
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. MY BOOKINGS SECTION -->
+    <section id="sec-my-bookings" class="app-section">
+      <h1 style="font-size: 28px; font-weight: 800; margin-bottom: 8px;">My Confirmed Bookings</h1>
+      <p style="color: var(--text-muted); margin-bottom: 24px;">View your QR code tickets or cancel bookings to trigger waitlist auto-reallocation</p>
+
+      <div id="bookings-list" style="display: flex; flex-direction: column; gap: 20px;">
+        <!-- Bookings injected dynamically -->
+      </div>
+    </section>
+
+    <!-- 4. WAITLIST TRACKER SECTION -->
+    <section id="sec-waitlist" class="app-section">
+      <h1 style="font-size: 28px; font-weight: 800; margin-bottom: 8px;">Waitlist Queue Tracker</h1>
+      <p style="color: var(--text-muted); margin-bottom: 24px;">Track your position for sold-out events and claim time-limited seat offers</p>
+
+      <div id="waitlist-offer-banner" class="glass-panel" style="display: none; border-color: var(--accent-emerald); padding: 20px; margin-bottom: 24px; background: rgba(16, 185, 129, 0.1);">
+        <h3 style="color: var(--accent-emerald); margin-bottom: 8px;">🎉 Waitlist Seat Offered to You!</h3>
+        <p id="offer-banner-text">A seat has opened up for your waitlisted category.</p>
+        <div style="margin-top: 12px; display: flex; gap: 12px; align-items: center;">
+          <button class="btn-primary" style="width: auto; background: var(--accent-emerald);" onclick="handleClaimOffer()">Claim Ticket Now</button>
+          <span style="color: var(--accent-amber); font-weight: bold;" id="offer-timer-display">Expires in: 05:00</span>
+        </div>
+      </div>
+
+      <div id="waitlist-list" style="display: flex; flex-direction: column; gap: 16px;">
+        <!-- Waitlist entries injected dynamically -->
+      </div>
+    </section>
+
+    <!-- 5. ORGANISER ANALYTICS SECTION -->
+    <section id="sec-organiser" class="app-section">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <div>
+          <h1 style="font-size: 28px; font-weight: 800;">Organiser Revenue & Booking Summary</h1>
+          <p style="color: var(--text-muted);">Monitor event performance, ticket sales, and waitlist demand</p>
+        </div>
+        <button class="btn-primary" style="width: auto;" onclick="openCreateEventModal()">+ Create New Listing</button>
+      </div>
+
+      <div id="organiser-metrics" class="events-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 28px;">
+        <!-- Summary metrics -->
+      </div>
+
+      <div class="glass-panel" style="padding: 24px;">
+        <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 16px;">Event Breakdown</h3>
+        <div id="organiser-table-container">
+          <!-- Summary table -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. ADMIN VENUES SECTION -->
+    <section id="sec-admin" class="app-section">
+      <h1 style="font-size: 28px; font-weight: 800; margin-bottom: 8px;">Venue & Seating Layout Management</h1>
+      <p style="color: var(--text-muted); margin-bottom: 24px;">Create auditoriums and define seat category layouts (Admin Role)</p>
+
+      <div class="glass-panel" style="padding: 28px; max-width: 640px; margin: auto;">
+        <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 20px;">Add New Venue</h3>
+        <form id="form-create-venue" onsubmit="handleCreateVenue(event)">
+          <div style="margin-bottom: 16px;">
+            <label style="display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 6px;">Venue Name</label>
+            <input type="text" id="v-name" required placeholder="e.g. Royal Opera Hall" style="width: 100%; padding: 10px; border-radius: 8px; background: var(--bg-elevated); border: 1px solid var(--border-color); color: white;">
+          </div>
+
+          <div style="margin-bottom: 16px;">
+            <label style="display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 6px;">Address</label>
+            <input type="text" id="v-address" required placeholder="e.g. 5th Avenue, NY" style="width: 100%; padding: 10px; border-radius: 8px; background: var(--bg-elevated); border: 1px solid var(--border-color); color: white;">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+            <div>
+              <label style="display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 6px;">Total Rows</label>
+              <input type="number" id="v-rows" value="4" min="1" max="10" required style="width: 100%; padding: 10px; border-radius: 8px; background: var(--bg-elevated); border: 1px solid var(--border-color); color: white;">
+            </div>
+            <div>
+              <label style="display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 6px;">Seats Per Row</label>
+              <input type="number" id="v-cols" value="6" min="1" max="12" required style="width: 100%; padding: 10px; border-radius: 8px; background: var(--bg-elevated); border: 1px solid var(--border-color); color: white;">
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary">Create Venue</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- 7. OUTBOX EMAIL INSPECTOR SECTION -->
+    <section id="sec-outbox" class="app-section">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div>
+          <h1 style="font-size: 28px; font-weight: 800;">Outbox Email & QR Ticket Inspector</h1>
+          <p style="color: var(--text-muted);">Inspect simulated transactional emails and embedded QR code tickets</p>
+        </div>
+        <button class="btn-secondary" onclick="loadOutboxEmails()">🔄 Refresh Email Logs</button>
+      </div>
+
+      <div id="outbox-email-list">
+        <!-- Outbox email items -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: Create Event -->
+  <div id="modal-create-event" class="modal-overlay">
+    <div class="glass-panel modal-content">
+      <button class="close-btn" onclick="closeModal('modal-create-event')">✕</button>
+      <h2 style="font-weight: 800; margin-bottom: 20px;">Create Event Listing</h2>
+      <form onsubmit="handleCreateEvent(event)">
+        <div style="margin-bottom: 14px;">
+          <label style="font-size: 12px; color: var(--text-muted);">Title</label>
+          <input type="text" id="ev-title" required placeholder="Event Name" style="width: 100%; padding: 10px; border-radius: 8px; background: var(--bg-elevated); border: 1px solid var(--border-color); color: white;">
+        </div>
+        <div style="margin-bottom: 14px;">
+          <label style="font-size: 12px; color: var(--text-muted);">Category</label>
+          <select id="ev-category" style="width: 100%; padding: 10px; border-radius: 8px; background: var(--bg-elevated); border: 1px solid var(--border-color); color: white;">
+            <option value="Movie">Movie</option>
+            <option value="Concert">Concert</option>
+          </select>
+        </div>
+        <div style="margin-bottom: 14px;">
+          <label style="font-size: 12px; color: var(--text-muted);">Select Venue</label>
+          <select id="ev-venue-id" style="width: 100%; padding: 10px; border-radius: 8px; background: var(--bg-elevated); border: 1px solid var(--border-color); color: white;">
+            <!-- Options loaded dynamically -->
+          </select>
+        </div>
+        <div style="margin-bottom: 14px;">
+          <label style="font-size: 12px; color: var(--text-muted);">Event Date & Time</label>
+          <input type="datetime-local" id="ev-date" required style="width: 100%; padding: 10px; border-radius: 8px; background: var(--bg-elevated); border: 1px solid var(--border-color); color: white;">
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+          <div>
+            <label style="font-size: 12px; color: var(--text-muted);">Premium Seat Price ($)</label>
+            <input type="number" id="ev-price-premium" value="250" required style="width: 100%; padding: 10px; border-radius: 8px; background: var(--bg-elevated); border: 1px solid var(--border-color); color: white;">
+          </div>
+          <div>
+            <label style="font-size: 12px; color: var(--text-muted);">Standard Seat Price ($)</label>
+            <input type="number" id="ev-price-standard" value="150" required style="width: 100%; padding: 10px; border-radius: 8px; background: var(--bg-elevated); border: 1px solid var(--border-color); color: white;">
+          </div>
+        </div>
+        <button type="submit" class="btn-primary">Publish Listing</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Join Waitlist -->
+  <div id="modal-join-waitlist" class="modal-overlay">
+    <div class="glass-panel modal-content">
+      <button class="close-btn" onclick="closeModal('modal-join-waitlist')">✕</button>
+      <h2 style="font-weight: 800; margin-bottom: 12px;">Join Sold-Out Waitlist</h2>
+      <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">
+        This seat category is currently sold out. Join the waitlist to automatically receive a seat offer if someone cancels!
+      </p>
+      <input type="hidden" id="wl-event-id">
+      <div style="margin-bottom: 20px;">
+        <label style="font-size: 12px; color: var(--text-muted);">Seat Category</label>
+        <select id="wl-category" style="width: 100%; padding: 10px; border-radius: 8px; background: var(--bg-elevated); border: 1px solid var(--border-color); color: white;">
+          <option value="Premium">Premium</option>
+          <option value="Standard">Standard</option>
+        </select>
+      </div>
+      <button class="btn-primary" onclick="submitJoinWaitlist()">Confirm Join Waitlist</button>
+    </div>
+  </div>
+
+  <!-- JS Logic -->
+  <script src="/js/app.js"></script>
+</body>
+</html>
