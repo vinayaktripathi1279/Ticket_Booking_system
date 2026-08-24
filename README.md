@@ -1,14 +1,17 @@
 # 🎟️ High-Concurrency Ticket Booking System
 
+[![Render Live App](https://img.shields.io/badge/Render-Live_Demo-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://ticket-booking-system-897.onrender.com)
+[![Vercel Live App](https://img.shields.io/badge/Vercel-Live_Demo-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://ticket-booking-system-vinayaktripathi1279s-projects.vercel.app)
+
 A full-stack movie and concert ticket booking platform with interactive visual seat maps, TTL seat hold auto-release, concurrency race condition prevention, waitlist auto-assignment on cancellation, and email ticket delivery with QR codes.
 
 ---
 
-## 🌐 Hosted Demo URLs
+## 🌐 Live Hosted Applications
 
-- **Render Live App**: [https://ticket-booking-system-897.onrender.com](https://ticket-booking-system-897.onrender.com)
-- **Vercel Live App**: [https://ticket-booking-system-vinayaktripathi1279s-projects.vercel.app](https://ticket-booking-system-vinayaktripathi1279s-projects.vercel.app)
-- **GitHub Repository**: [https://github.com/vinayaktripathi1279/Ticket_Booking_system.git](https://github.com/vinayaktripathi1279/Ticket_Booking_system.git)
+- 🚀 **Render Live App**: [https://ticket-booking-system-897.onrender.com](https://ticket-booking-system-897.onrender.com)
+- ⚡ **Vercel Live App**: [https://ticket-booking-system-vinayaktripathi1279s-projects.vercel.app](https://ticket-booking-system-vinayaktripathi1279s-projects.vercel.app)
+- 📁 **GitHub Repository**: [https://github.com/vinayaktripathi1279/Ticket_Booking_system.git](https://github.com/vinayaktripathi1279/Ticket_Booking_system.git)
 
 ---
 
